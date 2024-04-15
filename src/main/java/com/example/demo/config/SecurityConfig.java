@@ -16,6 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.example.demo.filter.MyRequestHeaderAuthenticationFilter;
+import com.example.demo.filter.MyUsernamePasswordAuthenticationFilter;
 import com.example.demo.service.MyAuthenticationUserDetailService;
 import com.example.demo.service.MyUserDetailsService;
 

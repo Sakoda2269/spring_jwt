@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.filter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
