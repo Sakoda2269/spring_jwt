@@ -26,6 +26,7 @@ public class MyAuthenticationUserDetailService implements AuthenticationUserDeta
 		try {
 			decodedJWT = JWT.require(Algorithm.HMAC256("secret")).build().verify(token.getPrincipal().toString());
 		} catch (JWTDecodeException ex) {
+			
 			throw new BadCredentialsException("Authorization header token is invalid");
 		}
 		

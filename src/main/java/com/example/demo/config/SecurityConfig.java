@@ -1,5 +1,6 @@
 package com.example.demo.config;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
@@ -18,6 +19,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.example.demo.filter.MyRequestHeaderAuthenticationFilter;
 import com.example.demo.filter.MyUsernamePasswordAuthenticationFilter;
+import com.example.demo.filter.TestFilter;
 import com.example.demo.service.MyAuthenticationUserDetailService;
 import com.example.demo.service.MyUserDetailsService;
 
@@ -55,6 +57,14 @@ public class SecurityConfig {
 	}
 	
 	@Bean
+	public FilterRegistrationBean<TestFilter> testFilter() {
+		FilterRegistrationBean<TestFilter> bean = new FilterRegistrationBean<TestFilter>(new TestFilter());
+		bean.addUrlPatterns("/api/mydata");
+		bean.setOrder(1);
+		return bean;
+	}
+	
+	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		AuthenticationManager authManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
 		http
@@ -85,4 +95,8 @@ public class SecurityConfig {
 			;
 		return http.build();
 	}
+	
+	
+	
+	
 }
