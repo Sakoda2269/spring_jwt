@@ -11,7 +11,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.demo.form.LoginForm;
 import com.example.demo.service.MyUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,7 +23,7 @@ public class MyUsernamePasswordAuthenticationFilter extends UsernamePasswordAuth
     private final AuthenticationManager authenticationManager;
 
     public MyUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+        this.authenticationManager = authenticationManager; //コンストラクタインジェクション?
 
         // "/api/login" の場合に認証を行うよう設定
         setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/login", "POST"));
@@ -54,17 +53,13 @@ public class MyUsernamePasswordAuthenticationFilter extends UsernamePasswordAuth
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        // リクエストのデータを LoginForm として取り出す
     	log.info(request.getParameter("username"));
     	String username = request.getParameter("username");
     	String password = request.getParameter("password");
-        LoginForm principal = new LoginForm();
-        principal.setUsername(username);
-        principal.setPassword(password);
         		//new ObjectMapper().readValue(request.getInputStream(), LoginForm.class);
         // 認証処理を実行する
         return authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(principal.getUsername(), principal.getPassword())
+                new UsernamePasswordAuthenticationToken(username, password)
         );
     }
 }
