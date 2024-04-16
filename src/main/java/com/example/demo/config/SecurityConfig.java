@@ -81,6 +81,8 @@ public class SecurityConfig {
 					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/login")).permitAll()
 					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/signup")).permitAll()
 					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/mydata")).authenticated()
+					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/message")).permitAll()
+					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/message/**")).permitAll()
 					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/**")).hasRole("ADMIN")
 			)
 			.headers(headers -> headers.frameOptions(

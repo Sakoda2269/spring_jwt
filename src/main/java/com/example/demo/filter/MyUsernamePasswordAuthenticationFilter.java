@@ -1,6 +1,5 @@
 package com.example.demo.filter;
 
-import java.io.IOException;
 import java.util.Date;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -55,15 +54,17 @@ public class MyUsernamePasswordAuthenticationFilter extends UsernamePasswordAuth
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            // リクエストのデータを LoginForm として取り出す
-            LoginForm principal = new ObjectMapper().readValue(request.getInputStream(), LoginForm.class);
-            // 認証処理を実行する
-            return authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(principal.getUsername(), principal.getPassword())
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        // リクエストのデータを LoginForm として取り出す
+    	log.info(request.getParameter("username"));
+    	String username = request.getParameter("username");
+    	String password = request.getParameter("password");
+        LoginForm principal = new LoginForm();
+        principal.setUsername(username);
+        principal.setPassword(password);
+        		//new ObjectMapper().readValue(request.getInputStream(), LoginForm.class);
+        // 認証処理を実行する
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(principal.getUsername(), principal.getPassword())
+        );
     }
 }

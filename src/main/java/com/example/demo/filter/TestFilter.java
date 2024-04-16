@@ -36,9 +36,6 @@ public class TestFilter extends OncePerRequestFilter{
 			for(String s : tmp) {
 				log.info(s);
 			}
-//			if(!tmp.contains("ROLE_ADMIN")) {
-//				response.sendError(HttpServletResponse.SC_FORBIDDEN);
-//			}
 		}
 		filterChain.doFilter(request, response);
 	}
