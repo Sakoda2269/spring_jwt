@@ -10,4 +10,9 @@ public interface PersonRepository extends JpaRepository<Person, String> {
 	
 	//指定されたusernameを持つPersonを返す
     public Optional<Person> findByUsername(String username);
+    
+    
+    // findBy<データ名>でデータ検索ができる
+    public Optional<Person> findByEmail(String email);
+    
 }

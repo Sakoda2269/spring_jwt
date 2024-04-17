@@ -58,6 +58,15 @@ public class HelloWorldRest {
     	return "auth error";
     }
     
+    @GET
+    @Path("/name")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getName() throws Exception {
+    	//認証されたユーザー情報はSecurityContextHolderから取得する
+    	MyUserDetails user = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	return user.getUsername();
+    }
+    
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     public String postMessage(@FormParam("message") String m) {

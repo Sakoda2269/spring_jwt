@@ -5,23 +5,25 @@ import java.util.Date;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.service.MyUserDetails;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
+//UsernamePasswordAuthenticationFiletrはユーザーネームとパスワードを使って認証するためのフィルター
+//JWTを生成するときに使う。
 @Slf4j
 public class MyUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
+    
+    //loginの処理を行い、JWTを返すフィルター。
     public MyUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager; //コンストラクタインジェクション?
 
@@ -44,16 +46,22 @@ public class MyUsernamePasswordAuthenticationFilter extends UsernamePasswordAuth
         			.withClaim("role", ex.getAuthorities().iterator().next().toString())
         			.sign(Algorithm.HMAC256("secret"));
         	
+        	//ヘッダーの"X-AUTH-TOKEN"にtokenをつける
         	res.setHeader("X-AUTH-TOKEN", token);
             res.setStatus(200);
-            MyUserDetails user = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            res.getWriter().write((new ObjectMapper()).writeValueAsString(user.getPerson()));
+            
+            //ついでにユーザー情報もJOSNとしてBodyに入れて返す
+//            MyUserDetails user = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//            res.getWriter().write((new ObjectMapper()).writeValueAsString(user.getPerson()));
         });
     }
 
+    //認証を実施する
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
     	log.info(request.getParameter("username"));
+    	
+    	//formparameterの"username"と"password"を使って認証をする
     	String username = request.getParameter("username");
     	String password = request.getParameter("password");
         		//new ObjectMapper().readValue(request.getInputStream(), LoginForm.class);

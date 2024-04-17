@@ -31,19 +31,32 @@ public class SecurityConfig {
 
 	@Autowired
 	public void configureProvider(
+			//AuthenticationManagerBuiledは認証するためのユーザー情報をどこから持ってくるかを設定するためのもの
+			//認証の方法をカスタマイズできる。
 			AuthenticationManagerBuilder auth,
 			MyUserDetailsService myUserDetailsService,
 			MyAuthenticationUserDetailService myAuthenticationUserDetailService
 		) throws Exception {
+		//PreAuthenticatedAuthenticationPrividerは事前に認証された状態のリクエストを処理する?
 		PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();
+		// 送られてきたJWTからユーザーを識別するためのクラス(インスタンス)を指定
 		preAuthenticatedAuthenticationProvider.setPreAuthenticatedUserDetailsService(myAuthenticationUserDetailService);
+		//有効なアカウントかどうかチェックするためのクラス(インスタンス)を指定
 		preAuthenticatedAuthenticationProvider.setUserDetailsChecker(new AccountStatusUserDetailsChecker());
+		//これによりSpring Securityの認証プロセスにおいてユーザー認証のプロバイダーを構築できる
 		auth.authenticationProvider(preAuthenticatedAuthenticationProvider);
+		//ここまでの処理でJWTを使った認証方法を設定している
 		
+		
+		//DaoAuthenticationProviderはデータベースの情報を使用して認証を行うプロバイダー
+		//JWTを発行する前の認証の時に使うと思われる
 		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+		//ユーザー名からデータベースのユーザーをとってくるためのクラス(インスタンス)を指定
 		daoAuthenticationProvider.setUserDetailsService(myUserDetailsService);
+		//パスワードのハッシュ方法を指定
 		daoAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder(8));
 		auth.authenticationProvider(daoAuthenticationProvider);
+		//ここまでの処理でJWTを発行する際のログインするときの認証方法を設定している。
 	}
 	
 	@Bean
@@ -51,6 +64,7 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder(8);
 	}
 	
+	//AuthenticationManagerBuilderをカスタマイズした場合に必要?
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration autheticationConfiguration) throws Exception {
 		return autheticationConfiguration.getAuthenticationManager();
@@ -83,7 +97,7 @@ public class SecurityConfig {
 					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/mydata")).authenticated()
 					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/message")).permitAll()
 					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/message/**")).permitAll()
-					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/**")).hasRole("ADMIN")
+					.requestMatchers(AntPathRequestMatcher.antMatcher("/api/**")).authenticated()
 			)
 			.headers(headers -> headers.frameOptions(
 					frame -> frame.sameOrigin()))

@@ -12,7 +12,9 @@ import lombok.Getter;
 @Getter
 public class MyUserDetails extends User {
 
-    private final Person person;
+	private final Person person;
+    private final String email;
+    private final String id;
     
     //Personからusername, password, roleを受け取るクラス
     
@@ -21,6 +23,8 @@ public class MyUserDetails extends User {
                 person.getPassword(),
                 Arrays.asList(person.getRoles().split(",")).stream().map(
                         role -> new SimpleGrantedAuthority((role))).toList());
+        this.email = person.getEmail();
+        this.id = person.getId();
         this.person = person;
     }
 }

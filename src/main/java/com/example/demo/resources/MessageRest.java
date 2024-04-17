@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.demo.datastore.DataDict;
 import com.example.demo.datastore.MessageDataSotre;
+import com.example.demo.repository.PersonRepository;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
@@ -21,9 +22,11 @@ import jakarta.ws.rs.core.MediaType;
 public class MessageRest {
 	
 	final DataDict<String> datas;
+	final PersonRepository repo;
 	
-	public MessageRest(MessageDataSotre store) {
+	public MessageRest(MessageDataSotre store, PersonRepository repo) {
 		datas = store;
+		this.repo = repo;
 	}
 	
 	@GET
